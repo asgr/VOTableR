@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<VOTABLE version="1.1">
+<RESOURCE>
+<TABLE>
+<DESCRIPTION>A few Messier objects</DESCRIPTION>
+<PARAM datatype="char" arraysize="*" ucd="meta.bib.author"
+name="Author" value="Mark Taylor"/>
+<FIELD name="Identifier" datatype="char" arraysize="*"
+ucd="meta.id;meta.main">
+<DESCRIPTION>Messier Identifier for the object</DESCRIPTION>
+</FIELD>
+<FIELD name="RA" datatype="double" unit="deg" ucd="pos.eq.ra;meta.main"/>
+<FIELD name="Dec" datatype="double" unit="deg" ucd="pos.eq.dec;meta.main"/>
+<DATA>
+<TABLEDATA>
+<TR><TD>M31</TD><TD> 10.502</TD><TD>41.266</TD></TR>
+<TR><TD>M57</TD><TD>283.253</TD><TD>33.033</TD></TR>
+<TR><TD>M82</TD><TD>148.753</TD><TD>69.683</TD></TR>
+</TABLEDATA>
+</DATA>
+</TABLE>
+</RESOURCE>
+</VOTABLE>

@@ -1,0 +1,12 @@
+Package: VOTableR
+Type: Package
+Title: Read and Write Simple and Parquet VOTable
+Version: 0.1.0
+Author: Aaron Robotham
+Maintainer: Aaron Robotham <aaron.robotham@uwa.edu.au>
+Description: Basic tools to read VOTable with embedded TABLEDATA and also to read Parquet files with a VOTable header in the metadata.
+License: LGPL-3
+Depends: XML, checkmate
+Suggests: arrow
+Encoding: UTF-8
+LazyData: true
