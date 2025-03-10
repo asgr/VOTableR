@@ -25,14 +25,47 @@ read_VOTable = function(filename, meta_col=TRUE, meta_tab=TRUE, meta_only=FALSE,
     return(cells)
   }, namespaces=ns)
 
+  
+  allnodes = getNodeSet(doc, FIELD, namespaces=ns)
+  
   # Get field names from FIELD elements
-  field_name = xpathSApply(doc, FIELD, xmlGetAttr, name="name", default=NA, namespaces=ns)
+  #field_name = xpathSApply(doc, FIELD, xmlGetAttr, name="name", default=NA, namespaces=ns)
+  node = NULL
+  
+  field_name = foreach(node = allnodes, .combine='c')%do%{
+    xmlGetAttr(node, name="name", default=NA)
+  }
 
   if(meta_col){
-    field_datatype = xpathSApply(doc, FIELD, xmlGetAttr, name="datatype", default=NA, namespaces=ns)
-    field_ucd = xpathSApply(doc, FIELD, xmlGetAttr, name="ucd", default=NA, namespaces=ns)
-    field_unit = xpathSApply(doc, FIELD, xmlGetAttr, name="unit", default=NA, namespaces=ns)
-    meta_col = data.frame(name=field_name, datatype=field_datatype, ucd=field_ucd, unit=field_unit)
+    field_descrip = foreach(node = allnodes, .combine='c')%do%{
+      xmlValue(node)
+    }
+    
+    field_datatype = foreach(node = allnodes, .combine='c')%do%{
+      xmlGetAttr(node, name="datatype", default=NA)
+    }
+    
+    field_ucd = foreach(node = allnodes, .combine='c')%do%{
+      xmlGetAttr(node, name="ucd", default=NA)
+    }
+    
+    field_unit = foreach(node = allnodes, .combine='c')%do%{
+      xmlGetAttr(node, name="unit", default=NA)
+    }
+    
+    field_arraysize = foreach(node = allnodes, .combine='c')%do%{
+      xmlGetAttr(node, name="arraysize", default=NA)
+    }
+    
+    #field_datatype = xpathSApply(doc, FIELD, xmlGetAttr, name="datatype", default=NA, namespaces=ns)
+    #field_ucd = xpathSApply(doc, FIELD, xmlGetAttr, name="ucd", default=NA, namespaces=ns)
+    #field_unit = xpathSApply(doc, FIELD, xmlGetAttr, name="unit", default=NA, namespaces=ns)
+    meta_col = data.frame(Name = field_name,
+                          Units = field_unit,
+                          Description = field_descrip,
+                          UCD = field_ucd,
+                          Datatype = field_datatype,
+                          Arraysize = field_arraysize)
   }else{
     meta_col = NULL
   }
@@ -91,15 +124,16 @@ write_VOTable = function(table, filename=NULL, meta_only=FALSE,
   table_node = newXMLNode("TABLE", parent = resource_node)
 
   if(!is.null(attributes(table)$meta_tab)){
-    descrip_node = newXMLNode("DESCRIPTION", parent = table_node)
-    newXMLTextNode(attributes(table)$meta_tab, parent=descrip_node)
+    descrip_node = newXMLNode("DESCRIPTION", attributes(table)$meta_tab, parent = table_node)
+    #newXMLTextNode(attributes(table)$meta_tab, parent=descrip_node)
   }
 
   if(is.null(attributes(table)$meta_col)){
     # Add FIELD elements based on data.frame columns
     for (col_name in colnames(table)) {
       field_type = switch(class(table[[col_name]])[1],
-                          integer = "int",
+                          integer = "short",
+                          integer64 = "long",
                           numeric = "double",
                           character = "char",
                           "char")
@@ -108,11 +142,22 @@ write_VOTable = function(table, filename=NULL, meta_only=FALSE,
   }else{
     meta_col = attributes(table)$meta_col
     for(i in 1:dim(meta_col)[1]){
-      newXMLNode("FIELD", attrs = c(name = meta_col[i,'name'],
-                                    datatype = meta_col[i,'datatype'],
-                                    ucd = meta_col[i,'ucd'],
-                                    unit = meta_col[i,'unit']),
-                 parent = table_node)
+      new_node = newXMLNode("FIELD", attrs = c(
+        arraysize = if(is.na(meta_col[i,'Arraysize'])){NULL}else{meta_col[i,'Arraysize']},
+        datatype = switch(class(table[[i]])[1], #regardless of the meta data, we need to use the R data types when writing out
+                          integer = "short",
+                          integer64 = "long",
+                          numeric = "double",
+                          character = "char",
+                          "char"),
+        name = if(is.na(meta_col[i,'Name'])){NULL}else{meta_col[i,'Name']},
+        ucd = if(is.na(meta_col[i,'UCD'])){NULL}else{meta_col[i,'UCD']},
+        unit = if(is.na(meta_col[i,'Units'])){NULL}else{meta_col[i,'Units']}
+      ),
+      parent = table_node)
+      if(!is.na(meta_col[i,'Description'])){
+        newXMLNode('DESCRIPTION', meta_col[i,'Description'], parent=new_node)
+      }
     }
   }
 

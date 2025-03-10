@@ -1,4 +1,4 @@
-read_VOTparq = function(filename, meta_col = TRUE, meta_tab = FALSE, ...){
+read_VOParquet = function(filename, meta_col = TRUE, meta_tab = FALSE, ...){
 
   if(!requireNamespace("arrow", quietly = TRUE)){
     stop('The arrow package is needed for parquet files. Please install from CRAN.', call. = FALSE)
@@ -7,10 +7,10 @@ read_VOTparq = function(filename, meta_col = TRUE, meta_tab = FALSE, ...){
   parq = arrow::read_parquet(filename, as_data_frame = FALSE)
   VOTraw = parq$metadata$`IVOA.VOTable-Parquet.content`
 
-  header = read_VOTable(VOTraw, asText = TRUE, meta_col = meta_col, meta_tab = meta_tab, meta_only = TRUE)
+  header = read_VOTable(VOTraw, asText = TRUE, meta_col = meta_col, meta_tab = meta_tab, meta_only = TRUE, ...)
 
   table = as.data.frame(parq)
-  colnames(table) = header$meta_col$name
+  colnames(table) = header$meta_col$Name
 
   attributes(table)$metadata = parq$metadata
   attributes(table)$meta_col = header$meta_col
@@ -19,7 +19,7 @@ read_VOTparq = function(filename, meta_col = TRUE, meta_tab = FALSE, ...){
   return(table)
 }
 
-write_VOTparq = function(table, filename, meta_extra = NULL, meta_overwrite = TRUE, ...){
+write_VOParquet = function(table, filename, meta_extra = NULL, meta_overwrite = TRUE, version = '1.0', ...){
 
   lapply(list(), assert_character, len=1, null.ok=TRUE)
 
@@ -42,11 +42,12 @@ write_VOTparq = function(table, filename, meta_extra = NULL, meta_overwrite = TR
   if(!is.null(meta_extra)){
     #need to loop and add
     meta_extra_names = names(meta_extra)
+    meta_orig_name = names(table$metadata)
     for(i in seq_along(meta_extra_names)){
       if(meta_overwrite){
         table$metadata[[meta_extra_names[i]]] = meta_extra[i]
       }else{
-        if(!meta_extra_names[i] %in% table$metadata){
+        if(!meta_extra_names[i] %in% meta_orig_name){
           table$metadata[[meta_extra_names[i]]] = meta_extra[i]
         }
       }
@@ -56,7 +57,7 @@ write_VOTparq = function(table, filename, meta_extra = NULL, meta_overwrite = TR
 
 
   table$metadata$`IVOA.VOTable-Parquet.content` = header
-  table$metadata$`IVOA.VOTable-Parquet.version` = '1.0'
+  table$metadata$`IVOA.VOTable-Parquet.version` = version
 
   arrow::write_parquet(table, filename, ...)
 }
