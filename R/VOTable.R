@@ -132,7 +132,7 @@ write_VOTable = function(table, filename=NULL, meta_only=FALSE,
     # Add FIELD elements based on data.frame columns
     for (col_name in colnames(table)) {
       field_type = switch(class(table[[col_name]])[1],
-                          integer = "short",
+                          integer = "int",
                           integer64 = "long",
                           numeric = "double",
                           character = "char",
@@ -145,7 +145,7 @@ write_VOTable = function(table, filename=NULL, meta_only=FALSE,
       new_node = newXMLNode("FIELD", attrs = c(
         arraysize = if(is.na(meta_col[i,'Arraysize'])){NULL}else{meta_col[i,'Arraysize']},
         datatype = switch(class(table[[i]])[1], #regardless of the meta data, we need to use the R data types when writing out
-                          integer = "short",
+                          integer = "int",
                           integer64 = "long",
                           numeric = "double",
                           character = "char",
