@@ -4,7 +4,7 @@ Title: Read and Write Simple VOTable and VOParquet files
 Version: 0.1.0
 Author: Aaron Robotham
 Maintainer: Aaron Robotham <aaron.robotham@uwa.edu.au>
-Description: Basic tools to read VOTable with embedded TABLEDATA and also to read VOParquet files with a VOTable header in the metadata.
+Description: Basic tools to read/write VOTable with embedded TABLEDATA and also to read/write VOParquet files with a VOTable header in the metadata.
 License: LGPL-3
 Depends: XML, checkmate, foreach
 Suggests: arrow
