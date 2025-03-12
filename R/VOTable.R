@@ -65,7 +65,7 @@ read_VOTable = function(filename, meta_col=TRUE, meta_tab=TRUE, meta_only=FALSE,
                           Description = field_descrip,
                           UCD = field_ucd,
                           Datatype = field_datatype,
-                          Arraysize = field_arraysize)
+                          Arraysize = as.integer(field_arraysize))
   }else{
     meta_col = NULL
   }
