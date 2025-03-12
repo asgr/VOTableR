@@ -9,7 +9,7 @@ VOParquet Read and Write
 Basically what the title says: functions to read and write VOParquet files!
 }
 \usage{
-read_VOParquet(filename, meta_col = TRUE, meta_tab = FALSE, ...)
+read_VOParquet(filename, meta_col = TRUE, meta_tab = FALSE, data.table = TRUE, ...)
 
 write_VOParquet(table, filename, meta_extra = NULL, meta_overwrite = TRUE,
   version = '1.0', ...)
@@ -27,6 +27,9 @@ Logical; should we read in columns meta data? This is attached as meta_col to th
 }
   \item{meta_tab}{
 Logical; should we read in table meta data? This is attached as meta_tab to the \code{\link{attributes}} of the returned table. For VOParquet this should usually be FALSE since the top level meta data for the table is usually included in the Parquet meta data directly, not in the embedded VOTable header (which normally only contains column meta data).
+}
+  \item{data.table}{
+Logical; should a \code{data.table} be returned?
 }
   \item{meta_extra}{
 List; optional list of additional meta data to include when writing out the Parquet file. This must be a simple list(name1 = 'sting1', name2 = 'string2') dictionary style list due to Parquet meta data limitations.

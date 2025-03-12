@@ -1,4 +1,5 @@
-read_VOTable = function(filename, meta_col=TRUE, meta_tab=TRUE, meta_only=FALSE, asText=FALSE, ...){
+read_VOTable = function(filename, meta_col=TRUE, meta_tab=TRUE, meta_only=FALSE, asText=FALSE,
+                        data.table = TRUE, ...){
   # Parse the XML file
   doc = xmlParse(filename, asText=asText, addAttributeNamespaces=TRUE,  ...)
 
@@ -103,6 +104,10 @@ read_VOTable = function(filename, meta_col=TRUE, meta_tab=TRUE, meta_only=FALSE,
     attributes(table)$meta_col = meta_col
     attributes(table)$meta_tab = meta_tab
 
+    if(data.table){
+      data.table::setDT(table)
+    }
+    
     return(table)
   } else {
     warning("No data found in the VOTable.")

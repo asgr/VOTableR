@@ -10,7 +10,7 @@ Basically what the title says: functions to read and write VOTable files!
 }
 \usage{
 read_VOTable(filename, meta_col = TRUE, meta_tab = TRUE, meta_only = FALSE,
-  asText = FALSE, ...)
+  asText = FALSE, data.table = TRUE, ...)
 
 write_VOTable(table, filename = NULL, meta_only = FALSE, version = '1.3',
   ns = "http://www.ivoa.net/xml/VOTable/v1.3")
@@ -31,6 +31,9 @@ Logical; should we read in table meta data? This is attached as meta_tab to the 
 }
   \item{meta_only}{
 Logical; should we only read in (and return) meta data? This is useful if you just want to know about the meta data (a bit like the FITS header) rather than load the actual contents.
+}
+  \item{data.table}{
+Logical; should a \code{data.table} be returned?
 }
   \item{asText}{
 Logical; should \option{filename} be a string containing the full VOTable?

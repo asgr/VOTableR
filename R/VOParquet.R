@@ -1,4 +1,4 @@
-read_VOParquet = function(filename, meta_col = TRUE, meta_tab = FALSE, ...){
+read_VOParquet = function(filename, meta_col = TRUE, meta_tab = FALSE, data.table = TRUE, ...){
 
   if(!requireNamespace("arrow", quietly = TRUE)){
     stop('The arrow package is needed for parquet files. Please install from CRAN.', call. = FALSE)
@@ -16,6 +16,10 @@ read_VOParquet = function(filename, meta_col = TRUE, meta_tab = FALSE, ...){
   attributes(table)$meta_col = header$meta_col
   attributes(table)$meta_tab = header$meta_tab
 
+  if(data.table){
+    data.table::setDT(table)
+  }
+  
   return(table)
 }
 
