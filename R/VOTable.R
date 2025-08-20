@@ -1,5 +1,5 @@
-read_VOTable = function(filename, meta_col=TRUE, meta_tab=TRUE, meta_only=FALSE, asText=FALSE,
-                        data.table = TRUE, ...){
+read_VOTable = function(filename, meta_col_read=TRUE, meta_tab_read=TRUE, meta_only=FALSE,
+                        asText=FALSE, data.table = TRUE, ...){
   # Parse the XML file
   doc = xmlParse(filename, asText=asText, addAttributeNamespaces=TRUE,  ...)
 
@@ -37,7 +37,7 @@ read_VOTable = function(filename, meta_col=TRUE, meta_tab=TRUE, meta_only=FALSE,
     xmlGetAttr(node, name="name", default=NA)
   }
 
-  if(meta_col){
+  if(meta_col_read){
     field_descrip = foreach(node = allnodes, .combine='c')%do%{
       xmlValue(node)
     }
@@ -71,7 +71,7 @@ read_VOTable = function(filename, meta_col=TRUE, meta_tab=TRUE, meta_only=FALSE,
     meta_col = NULL
   }
 
-  if(meta_tab){
+  if(meta_tab_read){
     meta_tab = xmlValue(getNodeSet(doc, DESCRIP)[[1]])
   }else{
     meta_tab = NULL
@@ -115,7 +115,7 @@ read_VOTable = function(filename, meta_col=TRUE, meta_tab=TRUE, meta_only=FALSE,
   }
 }
 
-write_VOTable = function(table, filename=NULL, meta_only=FALSE,
+write_VOTable = function(table, filename=NULL, meta_col = NULL, meta_only=FALSE,
                          version = '1.3',
                          ns = "http://www.ivoa.net/xml/VOTable/v1.3") {
   # Create the root VOTable node
@@ -132,8 +132,12 @@ write_VOTable = function(table, filename=NULL, meta_only=FALSE,
     descrip_node = newXMLNode("DESCRIPTION", attributes(table)$meta_tab, parent = table_node)
     #newXMLTextNode(attributes(table)$meta_tab, parent=descrip_node)
   }
+  
+  if(!is.null(meta_col)){
+    meta_col = attributes(table)$meta_col
+  }
 
-  if(is.null(attributes(table)$meta_col)){
+  if(is.null(meta_col)){
     # Add FIELD elements based on data.frame columns
     for (col_name in colnames(table)) {
       field_type = switch(class(table[[col_name]])[1],
@@ -145,7 +149,6 @@ write_VOTable = function(table, filename=NULL, meta_only=FALSE,
       newXMLNode("FIELD", attrs = c(name = col_name, datatype = field_type), parent = table_node)
     }
   }else{
-    meta_col = attributes(table)$meta_col
     for(i in 1:dim(meta_col)[1]){
       new_node = newXMLNode("FIELD", attrs = c(
         arraysize = if(is.na(meta_col[i,'Arraysize'])){NULL}else{meta_col[i,'Arraysize']},

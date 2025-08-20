@@ -9,10 +9,10 @@ VOTable Read and Write
 Basically what the title says: functions to read and write VOTable files!
 }
 \usage{
-read_VOTable(filename, meta_col = TRUE, meta_tab = TRUE, meta_only = FALSE,
+read_VOTable(filename, meta_col_read = TRUE, meta_tab_read = TRUE, meta_only = FALSE,
   asText = FALSE, data.table = TRUE, ...)
 
-write_VOTable(table, filename = NULL, meta_only = FALSE, version = '1.3',
+write_VOTable(table, filename = NULL, meta_col = NULL, meta_only = FALSE, version = '1.3',
   ns = "http://www.ivoa.net/xml/VOTable/v1.3")
 }
 %- maybe also 'usage' for other objects documented here.
@@ -23,10 +23,10 @@ Character scalar; path to VOTable file, either to be written to or read. Can als
   \item{table}{
 Data.frame; the table to be writen out.
 }
-  \item{meta_col}{
+  \item{meta_col_read}{
 Logical; should we read in columns meta data? This is attached as meta_col to the \code{\link{attributes}} of the returned table.
 }
-  \item{meta_tab}{
+  \item{meta_tab_read}{
 Logical; should we read in table meta data? This is attached as meta_tab to the \code{\link{attributes}} of the returned table.
 }
   \item{meta_only}{
@@ -34,6 +34,9 @@ Logical; should we only read in (and return) meta data? This is useful if you ju
 }
   \item{data.table}{
 Logical; should a \code{data.table} be returned?
+}
+  \item{meta_col}{
+Data.frame; optional way to load meta data into the VOParquet output. Data.frame can optionally contain the columns: Name (column names); Units (column units, optional); Description (verbose column description, optional); UCD (unique column descriptors using IVOA standards, optional); Datatype (column data types, but usually these should be detected from the \option{table}); Arraysize (String length, optional).
 }
   \item{asText}{
 Logical; should \option{filename} be a string containing the full VOTable?

@@ -1,4 +1,5 @@
-read_VOParquet = function(filename, meta_col = TRUE, meta_tab = FALSE, data.table = TRUE, ...){
+read_VOParquet = function(filename, meta_col_read = TRUE, meta_tab_read = FALSE,
+                          data.table = TRUE, ...){
 
   if(!requireNamespace("arrow", quietly = TRUE)){
     stop('The arrow package is needed for parquet files. Please install from CRAN.', call. = FALSE)
@@ -7,7 +8,7 @@ read_VOParquet = function(filename, meta_col = TRUE, meta_tab = FALSE, data.tabl
   parq = arrow::read_parquet(filename, as_data_frame = FALSE)
   VOTraw = parq$metadata$`IVOA.VOTable-Parquet.content`
 
-  header = read_VOTable(VOTraw, asText = TRUE, meta_col = meta_col, meta_tab = meta_tab, meta_only = TRUE, ...)
+  header = read_VOTable(VOTraw, asText = TRUE, meta_col_read = meta_col_read, meta_tab_read = meta_tab_read, meta_only = TRUE, ...)
 
   table = as.data.frame(parq)
   colnames(table) = header$meta_col$Name
@@ -23,7 +24,7 @@ read_VOParquet = function(filename, meta_col = TRUE, meta_tab = FALSE, data.tabl
   return(table)
 }
 
-write_VOParquet = function(table, filename, meta_extra = NULL, meta_overwrite = TRUE, version = '1.0', ...){
+write_VOParquet = function(table, filename, meta_col = NULL, meta_extra = NULL, meta_overwrite = TRUE, version = '1.0', ...){
 
   lapply(list(), assert_character, len=1, null.ok=TRUE)
 
@@ -35,7 +36,7 @@ write_VOParquet = function(table, filename, meta_extra = NULL, meta_overwrite = 
     stop('Input table must be a data.frame!')
   }
 
-  header = write_VOTable(table, meta_only = TRUE)
+  header = write_VOTable(table, meta_col = meta_col, meta_only = TRUE)
 
   if(!inherits(table, 'arrow_table')){
     metadata_orig = attributes(table)$metadata
