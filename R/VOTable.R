@@ -133,8 +133,21 @@ write_VOTable = function(table, filename=NULL, meta_col = NULL, meta_only=FALSE,
     #newXMLTextNode(attributes(table)$meta_tab, parent=descrip_node)
   }
   
-  if(!is.null(meta_col)){
+  if(is.null(meta_col)){
     meta_col = attributes(table)$meta_col
+  }
+  
+  if(!is.null(meta_col)){
+    if(dim(meta_col)[1] != dim(table)[2]){
+      stop('Number of columns in table != rows in meta_col!')
+    }
+    if(is.null(meta_col$Name)){
+      meta_col$Name = colnames(table)
+    }else{
+      if(any(meta_col$Name != colnames(table))){
+        stop('Mis-match between table colnames and meta_col$Name!')
+      }
+    }
   }
 
   if(is.null(meta_col)){
