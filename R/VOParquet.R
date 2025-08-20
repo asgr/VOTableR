@@ -11,7 +11,10 @@ read_VOParquet = function(filename, meta_col_read = TRUE, meta_tab_read = FALSE,
   header = read_VOTable(VOTraw, asText = TRUE, meta_col_read = meta_col_read, meta_tab_read = meta_tab_read, meta_only = TRUE, ...)
 
   table = as.data.frame(parq)
-  colnames(table) = header$meta_col$Name
+  
+  if(!is.null(header$meta_col)){
+    colnames(table) = header$meta_col$Name
+  }
 
   attributes(table)$metadata = parq$metadata
   attributes(table)$meta_col = header$meta_col
