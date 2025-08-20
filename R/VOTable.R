@@ -145,7 +145,11 @@ write_VOTable = function(table, filename=NULL, meta_col = NULL, meta_only=FALSE,
       meta_col$Name = colnames(table)
     }else{
       if(any(meta_col$Name != colnames(table))){
-        stop('Mis-match between table colnames and meta_col$Name!')
+        message('meta_col$Name not in colnames(table):')
+        print(meta_col$Name[!meta_col$Name %in% colnames(table)])
+        message('colnames(table) not in meta_col$Name:')
+        print(colnames(table)[!colnames(table) %in% meta_col$Name])
+        stop('Mis-match between colnames(table) and meta_col$Name!')
       }
     }
   }
