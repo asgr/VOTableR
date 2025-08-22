@@ -62,11 +62,16 @@ read_VOTable = function(filename, meta_col_read=TRUE, meta_tab_read=TRUE, meta_o
     #field_ucd = xpathSApply(doc, FIELD, xmlGetAttr, name="ucd", default=NA, namespaces=ns)
     #field_unit = xpathSApply(doc, FIELD, xmlGetAttr, name="unit", default=NA, namespaces=ns)
     meta_col = data.frame(Name = field_name,
-                          Units = field_unit,
+                          Unit = field_unit,
                           Description = field_descrip,
                           UCD = field_ucd,
                           Datatype = field_datatype,
-                          Arraysize = as.integer(field_arraysize))
+                          Arraysize = if(all(field_arraysize %in% 0:1000, na.rm = TRUE)){
+                            as.integer(field_arraysize)
+                          }else{
+                              field_arraysize
+                          }
+                          )
   }else{
     meta_col = NULL
   }
@@ -177,7 +182,7 @@ write_VOTable = function(table, filename=NULL, meta_col = NULL, meta_only=FALSE,
                           "char"),
         name = if(is.na(meta_col[i,'Name'])){NULL}else{meta_col[i,'Name']},
         ucd = if(is.na(meta_col[i,'UCD'])){NULL}else{meta_col[i,'UCD']},
-        unit = if(is.na(meta_col[i,'Units'])){NULL}else{meta_col[i,'Units']}
+        unit = if(is.na(meta_col[i,'Unit'])){NULL}else{meta_col[i,'Unit']}
       ),
       parent = table_node)
       if(!is.na(meta_col[i,'Description'])){

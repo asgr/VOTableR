@@ -1,7 +1,7 @@
 Package: VOTableR
 Type: Package
 Title: Read and Write Simple VOTable and VOParquet files
-Version: 0.1.2
+Version: 0.1.3
 Author: Aaron Robotham
 Maintainer: Aaron Robotham <aaron.robotham@uwa.edu.au>
 Description: Basic tools to read/write VOTable with embedded TABLEDATA and also to read/write VOParquet files with a VOTable header in the metadata.
