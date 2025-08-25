@@ -1,4 +1,5 @@
 \name{VOParquet}
+\alias{VOParquet}
 \alias{read_VOParquet}
 \alias{write_VOParquet}
 %- Also NEED an '\alias' for EACH other topic documented here.

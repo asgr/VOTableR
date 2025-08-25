@@ -1,4 +1,5 @@
 \name{VOTable}
+\alias{VOTable}
 \alias{read_VOTable}
 \alias{write_VOTable}
 %- Also NEED an '\alias' for EACH other topic documented here.
